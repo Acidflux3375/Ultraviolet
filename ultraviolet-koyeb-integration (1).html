@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ultraviolet | Web Tools</title>
+  <!-- Title will be rotated by script to avoid detection -->
+  
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #2a0845, #6441a5);
+      color: white;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .container {
+      max-width: 800px;
+      width: 90%;
+      text-align: center;
+      padding: 2em;
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+    
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5em;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .tagline {
+      font-size: 1.2rem;
+      margin-bottom: 2em;
+      opacity: 0.9;
+    }
+    
+    .search-form {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .search-input {
+      padding: 1em;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 1em;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .search-button {
+      padding: 1em;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #9d4edd;
+      color: white;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-weight: bold;
+    }
+    
+    .search-button:hover {
+      background-color: #c77dff;
+      transform: translateY(-2px);
+    }
+    
+    .search-button:active {
+      transform: translateY(0);
+    }
+    
+    .shortcuts {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5em;
+      margin-top: 2em;
+    }
+    
+    .shortcut {
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 0.5em 1em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .shortcut:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    footer {
+      margin-top: 3em;
+      opacity: 0.7;
+      font-size: 0.9rem;
+    }
+    
+    /* Stealth elements */
+    .hidden-elements {
+      position: absolute;
+      left: -9999px;
+      top: -9999px;
+      visibility: hidden;
+    }
+    
+    /* Different name classes to avoid detection */
+    .xj-about, .wk-container, .ns-terminal {
+      display: none;
+    }
+    
+    /* Media queries for responsiveness */
+    @media (max-width: 600px) {
+      .container {
+        width: 95%;
+        padding: 1.5em;
+      }
+      
+      h1 {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Ultraviolet</h1>
+    <p class="tagline">Browse the web freely</p>
+    
+    <form class="search-form" id="uv-form">
+      <input class="search-input" id="uv-address" type="text" placeholder="Search the web or enter URL" autofocus>
+      <button class="search-button" type="submit">Go</button>
+    </form>
+    
+    <div class="shortcuts">
+      <div class="shortcut" data-url="https://google.com">Google</div>
+      <div class="shortcut" data-url="https://youtube.com">YouTube</div>
+      <div class="shortcut" data-url="https://discord.com">Discord</div>
+      <div class="shortcut" data-url="https://reddit.com">Reddit</div>
+    </div>
+    
+    <footer>
+      Ultraviolet &copy; 2025
+    </footer>
+  </div>
+  
+  <!-- Stealth elements to confuse scanners -->
+  <div class="hidden-elements">
+    <div class="xj-about">
+      <h2>Online Development Environment</h2>
+      <p>Web-based IDE and collaboration tools for developers.</p>
+    </div>
+    <div class="wk-container">
+      <p>Document object model visualization and interaction toolkit.</p>
+    </div>
+    <div class="ns-terminal">
+      <p>Browser-based command-line interface for web development.</p>
+    </div>
+  </div>
+  
+  <!-- Import Ultraviolet client script from your Koyeb instance -->
+  <script src="./uv/uv.bundle.js"></script>
+  <script src="./uv/uv.config.js"></script>
+  
+  <script>
+    /* Ultraviolet proxy integration for Koyeb */
+    (function() {
+      // Get your Koyeb app URL - replace with your actual Koyeb app URL
+      const KOYEB_APP_URL = "https://selective-marcy-acidflux3375-ef5988c6.koyeb.app"; // Your Koyeb app URL
+      
+      // Set up Ultraviolet configuration
+      function getUVConfig() {
+        return {
+          handler: '/uv/uv.handler.js',
+          bundle: '/uv/uv.bundle.js',
+          config: '/uv/uv.config.js',
+          sw: '/uv/uv.sw.js'
+        };
+      }
+      
+      // Function to prepare URLs for the Ultraviolet proxy
+      function formatUrl(url) {
+        if (!url.startsWith('http')) {
+          if (!url.includes('.') || url.includes(' ')) {
+            url = `https://www.google.com/search?q=${encodeURIComponent(url)}`;
+          } else {
+            url = `https://${url}`;
+          }
+        }
+        return url;
+      }
+      
+      // Function to navigate using the Ultraviolet proxy
+      function navigateUV(url) {
+        const formattedURL = formatUrl(url);
+        
+        try {
+          // Using Ultraviolet's official client API
+          window.navigator.serviceWorker.register('./uv/uv.sw.js', {
+            scope: __uv$config.prefix
+          }).then(() => {
+            const uvURL = __uv$config.prefix + __uv$config.encodeUrl(formattedURL);
+            location.href = uvURL;
+          });
+        } catch (err) {
+          console.error('Service worker registration failed:', err);
+          alert('Failed to connect to proxy. Please try again.');
+        }
+      }
+      
+      // Set up event listeners
+      document.addEventListener('DOMContentLoaded', function() {
+        // Search form
+        const form = document.getElementById('uv-form');
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          const input = document.getElementById('uv-address');
+          navigateUV(input.value.trim());
+        });
+        
+        // Shortcuts
+        document.querySelectorAll('.shortcut').forEach(function(shortcut) {
+          shortcut.addEventListener('click', function() {
+            const url = this.getAttribute('data-url');
+            navigateUV(url);
+          });
+        });
+      });
+      
+      // Anti-detection measures
+      function setupAntiDetection() {
+        // Change document.title periodically
+        const titles = [
+          "Ultraviolet | Web Tools",
+          "Web Development Environment",
+          "Coding Sandbox - Web Projects",
+          "Online Web Platform"
+        ];
+        
+        let titleIndex = 0;
+        setInterval(() => {
+          document.title = titles[titleIndex];
+          titleIndex = (titleIndex + 1) % titles.length;
+        }, 3000);
+        
+        // Add random meta tags to confuse scanners
+        const metaTags = [
+          {name: "application-name", content: "WebDevSuite"},
+          {name: "apple-mobile-web-app-title", content: "WebDevSuite"},
+          {name: "description", content: "Web development environment for collaboration and testing."}
+        ];
+        
+        metaTags.forEach(meta => {
+          const tag = document.createElement('meta');
+          tag.name = meta.name;
+          tag.content = meta.content;
+          document.head.appendChild(tag);
+        });
+      }
+      
+      // Run anti-detection when page loads
+      window.addEventListener('load', setupAntiDetection);
+    })();
+  </script>
+</body>
+</html>
