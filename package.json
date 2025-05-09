@@ -1,4 +1,6 @@
 {
+	"packageManager": "pnpm@8.6.12",
+
 	"name": "@titaniumnetwork-dev/ultraviolet",
 	"version": "3.2.10",
 	"description": "Highly sophisticated proxy used for evading internet censorship or accessing websites in a controlled sandbox using the power of service-workers and more!",
